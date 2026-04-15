@@ -1,36 +1,90 @@
-# Bluetooth Ignore App
+# 蓝牙设备一键断开忽略
 
-一个可双击运行的 macOS 蓝牙小工具。
+[![macOS](https://img.shields.io/badge/macOS-12%2B-111111?logo=apple&logoColor=white)](https://support.apple.com/macos)
+[![Swift](https://img.shields.io/badge/Swift-5.9%2B-F05138?logo=swift&logoColor=white)](https://www.swift.org/)
+[![License](https://img.shields.io/github/license/useraby/bluetooth-ignore-app)](./LICENSE)
+[![Tag](https://img.shields.io/github/v/tag/useraby/bluetooth-ignore-app?label=version)](https://github.com/useraby/bluetooth-ignore-app/tags)
+[![Last Commit](https://img.shields.io/github/last-commit/useraby/bluetooth-ignore-app)](https://github.com/useraby/bluetooth-ignore-app/commits/main)
 
-核心能力：
+一个面向 macOS 的轻量蓝牙小工具：选择目标蓝牙设备后，可一键执行“断开 + 忽略（取消配对）”；也支持记住设备，之后双击直接执行。
 
-- 首次运行时，用户可从已发现的蓝牙设备中选择一个目标设备。
-- 选择时可勾选“记住该设备，下次直接执行”。
-- 如果已记住设备，后续启动 app 会自动对该设备执行“断开 + 忽略（取消配对）”。
-- 如果不勾选记住，则每次启动都会重新弹出设备选择框。
+## 功能特性
 
-附加行为：
+- 首次运行时，弹出极简设备选择框，用户可从当前蓝牙设备列表中选择目标设备。
+- 可勾选“记住该设备，下次直接执行”。
+- 如果已记住设备，后续启动 app 会自动对该设备执行断开 + 忽略。
+- 如果未勾选记住，则每次启动都会重新弹出选择框。
+- 启动时按住 `Option` 键，可强制重新选择设备。
+- 操作结果优先通过系统通知返回；如果通知权限不可用，则回退为原生提示框。
 
-- 启动 app 时按住 `Option` 键，可强制重新选择设备。
-- 操作结果优先通过系统通知返回；如果通知权限未开启，则会回退为原生提示框。
+## 使用场景
+
+- 经常需要断开某个蓝牙串口设备
+- 需要快速忽略某个已配对蓝牙设备
+- 想把常用处理动作做成可双击运行的小工具
 
 ## 依赖
 
 - macOS 12+
-- `blueutil`
+- [`blueutil`](https://github.com/toy/blueutil)
 
-Homebrew 安装：
+通过 Homebrew 安装：
 
 ```bash
 brew install blueutil
 ```
+
+## 快速开始
+
+1. 克隆仓库
+2. 安装 `blueutil`
+3. 构建 app
+4. 双击运行生成的 `.app`
+
+```bash
+git clone https://github.com/useraby/bluetooth-ignore-app.git
+cd bluetooth-ignore-app
+chmod +x ./build_app.sh
+./build_app.sh
+open "./dist/蓝牙设备一键断开忽略.app"
+```
+
+构建完成后，输出文件位于：
+
+```text
+./dist/蓝牙设备一键断开忽略.app
+```
+
+## 使用说明
+
+首次运行：
+
+1. 双击 `dist/蓝牙设备一键断开忽略.app`
+2. 从下拉框中选择目标蓝牙设备
+3. 视情况决定是否勾选“记住该设备，下次直接执行”
+4. 点击“执行”
+
+后续运行：
+
+- 如果已经记住设备：双击 app 后直接执行
+- 如果没有记住设备：每次都会重新弹出选择框
+- 如果想忽略已记住配置并重新选设备：启动时按住 `Option` 键
+
+## 本地配置与日志
+
+- 配置文件：`~/Library/Application Support/local.codex.bluetooth-ignore.selector/config.json`
+- 运行日志：`~/Library/Application Support/local.codex.bluetooth-ignore.selector/run.log`
+
+删除配置文件后，app 会回到首次选择流程。
 
 ## 项目结构
 
 ```text
 bluetooth-ignore-app/
 ├── build_app.sh
+├── LICENSE
 ├── README.md
+├── RELEASE_NOTES_v1.0.0.md
 ├── resources/
 │   ├── AppIcon.icns
 │   ├── icon-1024.png
@@ -41,38 +95,26 @@ bluetooth-ignore-app/
     └── 蓝牙设备一键断开忽略.app
 ```
 
-## 构建
+## 构建说明
 
-在项目目录执行：
+项目当前使用一个简单的 shell 构建脚本：
 
 ```bash
-chmod +x ./build_app.sh
 ./build_app.sh
 ```
 
-构建完成后，输出文件位于：
+该脚本会：
 
-```text
-./dist/蓝牙设备一键断开忽略.app
-```
+- 编译 `src/main.swift`
+- 生成 `.app` bundle
+- 拷贝图标和 `Info.plist`
+- 对生成产物做本地 ad-hoc 签名
 
-## 使用方式
+## 发布
 
-1. 双击 `dist/蓝牙设备一键断开忽略.app`
-2. 首次运行时选择目标蓝牙设备
-3. 可选是否勾选“记住该设备，下次直接执行”
+- 首个版本标签：`v1.0.0`
+- 发布说明文件：[`RELEASE_NOTES_v1.0.0.md`](./RELEASE_NOTES_v1.0.0.md)
 
-如果已经勾选记住：
+## License
 
-- 以后直接双击 app，会自动对该设备执行断开 + 忽略
-
-如果没有勾选记住：
-
-- 以后每次双击 app，都会重新弹出设备选择
-
-## 本地配置与日志
-
-- 配置文件：`~/Library/Application Support/local.codex.bluetooth-ignore.selector/config.json`
-- 运行日志：`~/Library/Application Support/local.codex.bluetooth-ignore.selector/run.log`
-
-删除配置文件后，app 会重新回到首次选择流程。
+本项目使用 [MIT License](./LICENSE)。
