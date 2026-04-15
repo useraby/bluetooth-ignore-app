@@ -1,0 +1,27 @@
+.DS_Store
+.localized
+
+# Build outputs
+build/
+dist/
+.build/
+DerivedData/
+
+# Swift / Xcode
+.swiftpm/
+Package.resolved
+*.xcodeproj/project.xcworkspace/
+*.xcworkspace/
+xcuserdata/
+*.xcuserstate
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and temp files
+*.log
+tmp/
+*.tmp
